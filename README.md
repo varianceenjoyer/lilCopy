@@ -24,20 +24,24 @@ Videos: `.mp4`, `.mov`, `.mkv`, `.avi`, `.webm`, `.wmv`, `.m4v`
 ### Prerequisites
 
 - Windows 10/11
-- [Rust toolchain](https://rustup.rs/) (for building)
 
-### Build & Install
+### Quick Install
 
 ```powershell
-# Clone the repo
-git clone https://github.com/yourname/lilcopy
-cd lilcopy
-
-# Build release binary
-cargo build --release
-
-# Install (no admin required - uses per-user registry)
+git clone https://github.com/intemporalis/lilCopy
+cd lilCopy
 .\install.ps1
+```
+
+The install script handles everything: installs Rust if needed, builds the binary, copies it to `%LOCALAPPDATA%\lilCopy`, and registers the shell extension. No admin required.
+
+### Manual Install
+
+```powershell
+# Install Rust if needed: https://rustup.rs/
+cargo build --release
+copy target\release\lilcopy.exe %LOCALAPPDATA%\lilCopy\
+# Then manually add registry entries (see Technical Details)
 ```
 
 ### Uninstall
@@ -143,7 +147,3 @@ PRs welcome! Some ideas:
 - [ ] Configurable default size via registry
 - [ ] Batch mode for multiple files
 - [ ] Custom thumbnail generation fallback
-
----
-
-*Made with ☭ for the meme proletariat*
