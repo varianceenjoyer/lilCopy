@@ -3,13 +3,103 @@
 
 param(
     [switch]$Uninstall,
+    [switch]$SkipBuild,
     [string]$InstallPath = "$env:LOCALAPPDATA\lilCopy"
 )
 
 $ErrorActionPreference = "Stop"
 
+function Test-RustInstalled {
+    try {
+        $cargo = Get-Command cargo -ErrorAction Stop
+        Write-Host "[+] Found Rust: $($cargo.Source)" -ForegroundColor Green
+        return $true
+    } catch {
+        return $false
+    }
+}
+
+function Install-Rust {
+    Write-Host "[*] Rust not found. Installing rustup..." -ForegroundColor Yellow
+    
+    $rustupUrl = "https://win.rustup.rs/x86_64"
+    $rustupExe = Join-Path $env:TEMP "rustup-init.exe"
+    
+    try {
+        # Download rustup-init.exe
+        Write-Host "    [*] Downloading rustup-init.exe..." -ForegroundColor DarkGray
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        Invoke-WebRequest -Uri $rustupUrl -OutFile $rustupExe -UseBasicParsing
+        
+        # Run rustup-init with default options (-y for unattended)
+        Write-Host "    [*] Running rustup installer..." -ForegroundColor DarkGray
+        Write-Host ""
+        Write-Host "    ============================================" -ForegroundColor Cyan
+        Write-Host "    Rustup will now install. Accept the defaults" -ForegroundColor Cyan
+        Write-Host "    or press Enter to use default installation." -ForegroundColor Cyan
+        Write-Host "    ============================================" -ForegroundColor Cyan
+        Write-Host ""
+        
+        # Run installer interactively so user can see progress
+        Start-Process -FilePath $rustupExe -ArgumentList "-y" -Wait -NoNewWindow
+        
+        # Clean up
+        Remove-Item $rustupExe -Force -ErrorAction SilentlyContinue
+        
+        # Add cargo to current session PATH
+        $cargoPath = Join-Path $env:USERPROFILE ".cargo\bin"
+        if (Test-Path $cargoPath) {
+            $env:PATH = "$cargoPath;$env:PATH"
+            Write-Host "[+] Rust installed successfully!" -ForegroundColor Green
+            return $true
+        } else {
+            Write-Host "[X] Rust installation may have failed. Please install manually from https://rustup.rs" -ForegroundColor Red
+            return $false
+        }
+    } catch {
+        Write-Host "[X] Failed to download/install Rust: $_" -ForegroundColor Red
+        Write-Host "    Please install manually from https://rustup.rs" -ForegroundColor Yellow
+        return $false
+    }
+}
+
+function Build-LilCopy {
+    Write-Host "[*] Building lilcopy..." -ForegroundColor Cyan
+    
+    Push-Location $PSScriptRoot
+    try {
+        & cargo build --release
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "[X] Build failed!" -ForegroundColor Red
+            return $false
+        }
+        Write-Host "[+] Build successful!" -ForegroundColor Green
+        return $true
+    } finally {
+        Pop-Location
+    }
+}
+
 function Install-LilCopy {
     Write-Host "[*] Installing lilCopy..." -ForegroundColor Cyan
+    
+    # Check for Rust and install if needed
+    if (-not (Test-RustInstalled)) {
+        if (-not (Install-Rust)) {
+            exit 1
+        }
+    }
+    
+    # Build if exe doesn't exist or SkipBuild not specified
+    $exePath = Join-Path $PSScriptRoot "target\release\lilcopy.exe"
+    if (-not $SkipBuild -or -not (Test-Path $exePath)) {
+        if (-not (Test-Path $exePath)) {
+            Write-Host "[*] Executable not found, building..." -ForegroundColor Yellow
+        }
+        if (-not (Build-LilCopy)) {
+            exit 1
+        }
+    }
     
     # Create install directory
     if (-not (Test-Path $InstallPath)) {
@@ -17,9 +107,8 @@ function Install-LilCopy {
     }
     
     # Copy executable
-    $exePath = Join-Path $PSScriptRoot "target\release\lilcopy.exe"
     if (-not (Test-Path $exePath)) {
-        Write-Host "[X] Error: lilcopy.exe not found. Run 'cargo build --release' first." -ForegroundColor Red
+        Write-Host "[X] Error: lilcopy.exe not found after build." -ForegroundColor Red
         exit 1
     }
     
@@ -53,7 +142,7 @@ function Install-LilCopy {
     Write-Host ""
     Write-Host "     Restart Explorer or log out/in to see the context menu." -ForegroundColor Yellow
     Write-Host ""
-    Write-Host "     Seize the memes of production, comrade!" -ForegroundColor Red
+    Write-Host "     Seize the memes of distribution, comrade!" -ForegroundColor Red
 }
 
 function Uninstall-LilCopy {
