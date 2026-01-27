@@ -101,7 +101,7 @@ unsafe fn extract_thumbnail_inner(
     let rgba = hbitmap_to_rgba(hbitmap, size)?;
     
     // Clean up
-    DeleteObject(hbitmap);
+    let _ = DeleteObject(hbitmap);
 
     Ok(rgba)
 }
@@ -172,7 +172,7 @@ unsafe fn hbitmap_to_rgba(
 
     // Clean up GDI objects
     SelectObject(hdc, old_bitmap);
-    DeleteDC(hdc);
+    let _ = DeleteDC(hdc);
 
     if result == 0 {
         return Err("Failed to get bitmap bits".into());

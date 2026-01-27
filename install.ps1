@@ -162,24 +162,6 @@ function Uninstall-LilCopy {
         Write-Host "    [-] Removed video handler" -ForegroundColor DarkGray
     }
     
-    # Clean up old HKCR registrations if they exist (from previous installs)
-    $oldPaths = @(
-        "Registry::HKEY_CLASSES_ROOT\*\shell\lilCopy",
-        "Registry::HKEY_CLASSES_ROOT\jpegfile\shell\lilCopy",
-        "Registry::HKEY_CLASSES_ROOT\pngfile\shell\lilCopy",
-        "Registry::HKEY_CLASSES_ROOT\giffile\shell\lilCopy"
-    )
-    foreach ($path in $oldPaths) {
-        if (Test-Path $path) {
-            try {
-                Remove-Item -Path $path -Recurse -Force -ErrorAction Stop
-                Write-Host "    [-] Cleaned up old registration: $path" -ForegroundColor DarkGray
-            } catch {
-                Write-Host "    [!] Could not remove $path (may need admin)" -ForegroundColor Yellow
-            }
-        }
-    }
-    
     # Remove install directory
     if (Test-Path $InstallPath) {
         Remove-Item -Path $InstallPath -Recurse -Force
