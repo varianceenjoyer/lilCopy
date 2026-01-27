@@ -6,6 +6,20 @@ A lightweight Windows shell extension that adds a right-click option to copy a m
 
 ![Context Menu Example](docs/context-menu.png)
 
+## Prerequisites
+
+- Windows 10/11
+
+## Quick Install
+
+```powershell
+git clone https://github.com/intemporalis/lilCopy
+cd lilCopy
+.\install.ps1
+```
+
+The install script handles everything: installs Rust if needed, builds the binary, copies it to `%LOCALAPPDATA%\lilCopy`, and registers the shell extension. No admin required.
+
 ## Features
 
 - 🖼️ Extracts Windows Explorer thumbnails (128px default)
@@ -19,23 +33,7 @@ A lightweight Windows shell extension that adds a right-click option to copy a m
 Images: `.jpg`, `.jpeg`, `.png`, `.gif`
 Videos: `.mp4`, `.mov`, `.mkv`, `.avi`, `.webm`, `.wmv`, `.m4v`
 
-## Installation
-
-### Prerequisites
-
-- Windows 10/11
-
-### Quick Install
-
-```powershell
-git clone https://github.com/intemporalis/lilCopy
-cd lilCopy
-.\install.ps1
-```
-
-The install script handles everything: installs Rust if needed, builds the binary, copies it to `%LOCALAPPDATA%\lilCopy`, and registers the shell extension. No admin required.
-
-### Manual Install
+## Manual Install
 
 ```powershell
 # Install Rust if needed: https://rustup.rs/
