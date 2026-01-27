@@ -135,6 +135,17 @@ function Install-LilCopy {
     New-Item -Path "$videoRegPath\command" -Force | Out-Null
     Set-ItemProperty -Path "$videoRegPath\command" -Name "(default)" -Value "`"$installedExe`" `"%1`""
     Write-Host "    [+] Registered for all video types" -ForegroundColor DarkGray
+
+    # Register for specific video extensions (fallback for systems without proper PerceivedType)
+    $videoExtensions = @(".mp4", ".mov", ".mkv", ".avi", ".webm", ".wmv", ".m4v")
+    foreach ($ext in $videoExtensions) {
+        $extRegPath = "HKCU:\Software\Classes\SystemFileAssociations\$ext\shell\lilCopy"
+        New-Item -Path $extRegPath -Force | Out-Null
+        Set-ItemProperty -Path $extRegPath -Name "(default)" -Value "Copy Thumbnail"
+        New-Item -Path "$extRegPath\command" -Force | Out-Null
+        Set-ItemProperty -Path "$extRegPath\command" -Name "(default)" -Value "`"$installedExe`" `"%1`""
+    }
+    Write-Host "    [+] Registered for specific video extensions ($($videoExtensions -join ', '))" -ForegroundColor DarkGray
     
     Write-Host ""
     Write-Host "[OK] lilCopy installed successfully!" -ForegroundColor Green
@@ -161,6 +172,16 @@ function Uninstall-LilCopy {
         Remove-Item -Path $videoRegPath -Recurse -Force
         Write-Host "    [-] Removed video handler" -ForegroundColor DarkGray
     }
+
+    # Remove specific video extension registrations
+    $videoExtensions = @(".mp4", ".mov", ".mkv", ".avi", ".webm", ".wmv", ".m4v")
+    foreach ($ext in $videoExtensions) {
+        $extRegPath = "HKCU:\Software\Classes\SystemFileAssociations\$ext\shell\lilCopy"
+        if (Test-Path $extRegPath) {
+            Remove-Item -Path $extRegPath -Recurse -Force
+        }
+    }
+    Write-Host "    [-] Removed video extension handlers" -ForegroundColor DarkGray
     
     # Remove install directory
     if (Test-Path $InstallPath) {

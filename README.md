@@ -16,8 +16,8 @@ A lightweight Windows shell extension that adds a right-click option to copy a m
 
 ## Supported Formats
 
-Images: `.jpg`, `.jpeg`, `.png`, `.gif`, `.webp`, `.bmp`
-Videos: `.mp4`, `.webm`, `.mov`, `.avi`, `.mkv`
+Images: `.jpg`, `.jpeg`, `.png`, `.gif`
+Videos: `.mp4`, `.mov`, `.mkv`, `.avi`, `.webm`, `.wmv`, `.m4v`
 
 ## Installation
 
@@ -109,7 +109,7 @@ cargo test
 
 ## Technical Details
 
-- **Shell Integration**: Registers under `HKCU\Software\Classes\SystemFileAssociations\{image,video}\shell\lilCopy`
+- **Shell Integration**: Registers under `HKCU\Software\Classes\SystemFileAssociations\{image,video}\shell\lilCopy` plus specific video extensions as fallback
 - **Thumbnail API**: Uses `IShellItemImageFactory::GetImage` with `SIIGBF_THUMBNAILONLY`
 - **Clipboard Format**: RGBA bitmap via `arboard` crate
 - **COM Threading**: Apartment-threaded (STA)
