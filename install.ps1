@@ -53,7 +53,7 @@ function Install-LilCopy {
     Write-Host ""
     Write-Host "     Restart Explorer or log out/in to see the context menu." -ForegroundColor Yellow
     Write-Host ""
-    Write-Host "     Seize the memes of distribution, comrade!" -ForegroundColor Red
+    Write-Host "     Seize the memes of production, comrade!" -ForegroundColor Red
 }
 
 function Uninstall-LilCopy {
