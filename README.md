@@ -1,8 +1,6 @@
 # lilCopy
 
-> *Seize the memes of production, comrade!*
-
-![lilCopy_Demo](https://github.com/user-attachments/assets/3791e841-4c88-4f25-a2f9-f6c84a19309e)
+<img width="360" height="288" alt="541829416-3791e841-4c88-4f25-a2f9-f6c84a19309e" src="https://github.com/user-attachments/assets/47429b44-59f8-4952-a17c-26a41a7f15c9" />
 
 A lightweight Windows shell extension that adds a right-click option to copy a media file's **thumbnail** to your clipboard instead of the full-size image. Perfect for Discord-friendly pasting of older, larger memes.
 
