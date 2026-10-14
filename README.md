@@ -13,7 +13,7 @@ A lightweight Windows shell extension that adds a right-click option to copy a m
 ## Quick Install
 
 ```powershell
-git clone https://github.com/intemporalis/lilCopy
+git clone https://github.com/varianceenjoyer/lilCopy
 cd lilCopy
 .\install.ps1
 ```
